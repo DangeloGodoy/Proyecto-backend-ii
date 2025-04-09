@@ -9,7 +9,6 @@ const homeView = async (req, res) => {
     const products = await productsManager.readAll();
     return res.status(200).render("index", { products, title: "HOME" });
   } catch (error) {
-    console.log(error);
     return res.status(500).render("error");
   }
 };
@@ -19,7 +18,6 @@ const profileView = async (req, res) => {
     const profile = await usersManager.readById(user_id);
     return res.status(200).render("profile", { title: "PROFILE", profile });
   } catch (error) {
-    console.log(error);
     return res.status(500).render("error");
   }
 };
@@ -31,7 +29,6 @@ const detailsView = async (req, res) => {
       .status(200)
       .render("product", { title: product.title.toUpperCase(), product });
   } catch (error) {
-    console.log(error);
     return res.status(500).render("error");
   }
 };
@@ -44,7 +41,6 @@ const cartView = async (req, res) => {
       .status(200)
       .render("cart", { title: "CART", carts, total: total[0].total });
   } catch (error) {
-    console.log(error);
     return res.status(500).render("error");
   }
 };
@@ -52,7 +48,6 @@ const registerView = (req, res) => {
   try {
     res.status(200).render("register", { title: "REGISTER FORM" });
   } catch (error) {
-    console.log(error);
     const statusCode = error.statusCode || 500;
     res.status(statusCode).render("error");
   }
@@ -61,7 +56,6 @@ const loginView = (req, res) => {
   try {
     res.status(200).render("login", { title: "LOGIN FORM" });
   } catch (error) {
-    console.log(error);
     const statusCode = error.statusCode || 500;
     res.status(statusCode).render("error");
   }

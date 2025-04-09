@@ -15,14 +15,13 @@ document.querySelector("#register").addEventListener("click", async () => {
         const url = "/api/auth/register";
         let response = await fetch(url, opts);
         response = await response.json();
-        console.log(response)
         if (response.error) {
             alert(response.error);
         } else {
             location.replace("/login");
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         //modificar a tostyfiay
         alert("Error al registrar el usuario");
     }
