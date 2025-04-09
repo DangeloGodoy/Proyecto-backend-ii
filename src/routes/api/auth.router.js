@@ -1,11 +1,29 @@
 import { Router } from "express";
 import { usersManager } from "../../data/mongo/managers/manager.mongo.js";
+import { createHash, verifyHash } from "../../helpers/hash.helper.js";
 
 const authRouter = Router();
 
 const register = async (req, res, next) => {
     try {
         const data = req.body;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!data.name || !data.email || !data.password) {
+            const error = new Error("Missing data")
+            error.statusCode = 400;
+            throw error;
+        }
+        if (!emailRegex.test(data.email)) {
+            const error = new Error("Invalid email");
+            error.statusCode = 400;
+            throw error;
+        }
+        if (await usersManager.readBy({ email: data.email })) {
+            const error = new Error("User already exists");
+            error.statusCode = 409;
+            throw error;
+        }
+        data.password = createHash(data.password);
         const response = await usersManager.createOne(data);
         res.status(201).json({
             response,
@@ -20,7 +38,7 @@ const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const response = await usersManager.readBy({ email });
-        if (response.password !== password) {
+        if (!verifyHash(password, response.password)) {
             const error = new Error("Invalid credentials");
             error.status = 401;
             throw error;
