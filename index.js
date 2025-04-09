@@ -3,6 +3,7 @@ import express from "express";
 import { engine } from "express-handlebars";
 import cookieParser from "cookie-parser";
 import sessions from "express-session";
+import sessionFileStore from "session-file-store";
 import __dirname from "./utils.js";
 import dbConnect from "./src/helpers/dbConnect.helper.js";
 import router from "./src/routes/index.router.js";
@@ -28,11 +29,17 @@ server.use(express.static("public"));
 server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
 server.use(cookieParser(process.env.COOKIE_SECRET));
-server.use(sessions({
+const FileStore = sessionFileStore(sessions);
+server.use(
+    sessions({
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUnitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 },
+    store: new FileStore({ 
+        ttl: 7 * 24 * 60 * 60,
+        path: "./src/data/sessions",
+        retries: 4
+    }),
 }))
 
 /* Routers */
