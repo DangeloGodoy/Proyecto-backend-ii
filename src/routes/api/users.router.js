@@ -3,7 +3,7 @@ import { usersManager } from "../../data/mongo/managers/manager.mongo.js";
 
 const usersRouter = Router();
 
-const createOne = async(req, res, netx) => {
+const createOne = async(req, res, next) => {
     try {
         const data = req.body;
         const response = await usersManager.createOne(data);
@@ -13,16 +13,16 @@ const createOne = async(req, res, netx) => {
             url: req.url,
         })
     } catch (error) {
-        netx(error)
+        next(error)
     }
 };
-const readAll = async (req, res, netx) => {
+const readAll = async (req, res, next) => {
     try {
         const filter = req.query;
         const response = await usersManager.readAll(filter);
         if (response.length === 0) {
             const error = new Error("Not found");
-            error.status = 404;
+            error.statusCode = 404;
             throw error;
         }
         res.status(200).json({
@@ -31,16 +31,16 @@ const readAll = async (req, res, netx) => {
             url: req.url,
         })
     } catch (error) {
-        netx(error)
+        next(error)
     }
 };
-const readById = async (req, res, netx) => {
+const readById = async (req, res, next) => {
     try {
         const { uid } = req.params;
         const response = await usersManager.readById(uid);
         if (!response) {
             const error = new Error("Not found");
-            error.status = 404;
+            error.statusCode = 404;
             throw error;
         }
         res.status(200).json({
@@ -49,17 +49,17 @@ const readById = async (req, res, netx) => {
             url: req.url,
         })
     } catch (error) {
-        netx(error)
+        next(error)
     }
 };
-const updateById = async (req, res, netx) => {
+const updateById = async (req, res, next) => {
     try {
         const { uid } = req.params;
         const data = req.body;
         const response = await usersManager.updateById(uid, data);
         if (!response) {
             const error = new Error("Not found");
-            error.status = 404;
+            error.statusCode = 404;
             throw error;
         }
         res.status(200).json({
@@ -68,16 +68,16 @@ const updateById = async (req, res, netx) => {
             url: req.url,
         })
     } catch (error) {
-        netx(error)
+        next(error)
     }
 };    
-const deleteById = async (req, res, netx) => {
+const deleteById = async (req, res, next) => {
     try {
         const { uid } = req.params;
         const response = await usersManager.destoyById(uid);
         if (!response) {
             const error = new Error("Not found");
-            error.status = 404;
+            error.statusCode = 404;
             throw error;
         }
         res.status(200).json({
@@ -86,7 +86,7 @@ const deleteById = async (req, res, netx) => {
             url: req.url,
         })
     } catch (error) {
-        netx(error)
+        next(error)
     }
 };
 
