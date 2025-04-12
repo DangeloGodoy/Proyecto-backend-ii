@@ -5,6 +5,7 @@ const schema = new Schema(
     {
         name: { type: String },
         date: { type: Date, default: Date.now },
+        city: { type: String },
         email: { type: String, required: true, unique: true, index: true },
         password: { type: String, required: true },
         role: { type: String, default: "USER", enum: ["USER", "ADMIN"] },
