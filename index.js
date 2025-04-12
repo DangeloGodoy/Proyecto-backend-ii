@@ -22,7 +22,7 @@ server.listen(port, ready);
 
 /* Engine Settings */
 server.engine("handlebars", engine());
-server.set("view engine", "handlebars"); // Corregido
+server.set("view engine", "handlebars");
 server.set("views", __dirname + "/src/views");
 
 /* Middlewares */
