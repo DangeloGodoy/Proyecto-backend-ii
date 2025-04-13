@@ -1,11 +1,9 @@
-import { Router } from "express";
+import CustomRouter from "./custom.router.js";
 import {
   usersManager,
   productsManager,
 } from "../data/mongo/managers/manager.mongo.js";
 import { cartsManager } from "../data/mongo/managers/carts.mongo.js";
-
-const viewsRouter = Router();
 
 const homeView = async (req, res) => {
   try {
@@ -64,11 +62,20 @@ const loginView = (req, res) => {
   }
 };
 
-viewsRouter.get("/", homeView);
-viewsRouter.get("/profile/:user_id", profileView);
-viewsRouter.get("/product/:product_id", detailsView);
-viewsRouter.get("/cart/:user_id", cartView);
-viewsRouter.get("/register", registerView);
-viewsRouter.get("/login", loginView);
+class ViewsRouter extends CustomRouter {
+  constructor() {
+    super();
+    this.init();
+  }
+  init = () => {
+    this.read("/", homeView);
+    this.read("/profile/:user_id", profileView);
+    this.read("/product/:product_id", detailsView);
+    this.read("/cart/:user_id", cartView);
+    this.read("/register", registerView);
+    this.read("/login", loginView);
+  };
+}
 
-export default viewsRouter;
+const viewsRouter = new ViewsRouter();
+export default viewsRouter.getRouter();
