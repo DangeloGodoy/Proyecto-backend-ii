@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { usersManager, productsManager } from "../data/mongo/managers/manager.mongo.js";
+import {
+  usersManager,
+  productsManager,
+} from "../data/mongo/managers/manager.mongo.js";
 import { cartsManager } from "../data/mongo/managers/carts.mongo.js";
 
 const viewsRouter = Router();
@@ -60,6 +63,7 @@ const loginView = (req, res) => {
     res.status(statusCode).render("error");
   }
 };
+
 viewsRouter.get("/", homeView);
 viewsRouter.get("/profile/:user_id", profileView);
 viewsRouter.get("/product/:product_id", detailsView);
