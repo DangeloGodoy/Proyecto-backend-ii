@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { passportCb } from "../../middlewares/passportCb.mid.js";
 import passport from "../../middlewares/passport.mid.js";
 
 const authRouter = Router();
@@ -9,7 +10,7 @@ const register = async (req, res, next) => {
     res.status(201).json({
       response,
       method: req.method,
-      url: req.url,
+      url: req.originalUrl,
     });
   } catch (error) {
     next(error);
@@ -18,29 +19,31 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const response = req.user;
-    console.log(response);
-
-    res.status(200).json({
+    const token = req.token;
+    const opts = {
+      maxAge: 60 * 60 * 24 * 7,
+      httpOnly: true,
+    };
+    res.cookie("token", token, opts).status(200).json({
       response,
       method: req.method,
-      url: req.url,
+      url: req.originalUrl,
     });
   } catch (error) {
     next(error);
   }
 };
-const online = async (req, res, next) => {
+const online = (req, res, next) => {
   try {
-    if (req.session.user_id) {
+    if (req.user._id) {
       res.status(200).json({
-        online: true,
-        user_id: req.session.user_id,
+        user_id: req.user._id,
         method: req.method,
-        url: req.url,
+        url: req.originalUrl,
       });
     } else {
-      const error = new Error("Invalid credentials");
-      error.statusCode = 401;
+      const error = new Error("User not found");
+      error.statusCode = 404;
       throw error;
     }
   } catch (error) {
@@ -49,11 +52,10 @@ const online = async (req, res, next) => {
 };
 const signout = async (req, res, next) => {
   try {
-    req.session.destroy();
-    res.status(200).json({
+    res.clearCookie("token").status(200).json({
       message: "Logged out successfully",
       method: req.method,
-      url: req.url,
+      url: req.originalUrl,
     });
   } catch (error) {
     next(error);
@@ -68,25 +70,38 @@ const badAuth = async (req, res, next) => {
     next(error);
   }
 };
+const google = async (req, res, next) => {
+  try {
+    const response = req.user;
+    res.status(200).json({
+      response,
+      method: req.method,
+      url: originalUrl,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-authRouter.post(
-  "/register",
-  passport.authenticate("register", {
-    session: false,
-    failureRedirect: "/api/auth/bad-auth",
-  }),
-  register
-);
-authRouter.post(
-  "/login",
-  passport.authenticate("login", {
-    session: false,
-    failureRedirect: "/api/auth/bad-auth",
-  }),
-  login
-);
-authRouter.post("/online", online);
-authRouter.post("/signout", signout);
+authRouter.post("/register", passportCb("register"), register);
+authRouter.post("/login", passportCb("login"), login);
+authRouter.get("/online", passportCb("current"), online);
+authRouter.post("/signout", passportCb("current"), signout);
 authRouter.get("/bad-auth", badAuth);
+authRouter.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["email", "profile"],
+    failureRedirect: "/api/auth/bad-auth",
+  })
+);
+authRouter.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/api/auth/bad-auth",
+  }),
+  google
+);
 
 export default authRouter;
