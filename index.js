@@ -7,7 +7,7 @@ import morgan from "morgan";
 import MongoStore from "connect-mongo";
 import __dirname from "./utils.js";
 import dbConnect from "./src/helpers/dbConnect.helper.js";
-import { router } from "./src/routes/index.router.js";
+import router from "./src/routes/index.router.js";
 import { errorHandler } from "./src/middlewares/errorHandler.mid.js";
 import { pathHandler } from "./src/middlewares/pathHandler.mid.js";
 
