@@ -1,20 +1,17 @@
-import { response } from "express";
-
 export const setupResponses = (req, res, next) => {
   try {
-    const { methos, originalUrl: url } = req;
+    const { method, originalUrl: url } = req;
     const messages = {
       200: "Success",
       201: "Created",
-      400: "Bad Request",
-      401: "Unauthorized",
+      400: "Client Error",
+      401: "Bad auth",
       403: "Forbidden",
-      404: "Not Found",
-      500: "Internal Server Error",
+      404: "Not found",
+      500: "Server Error",
     };
-    const successResponse = (code, response, message = messages[code]) => {
-      return res.status(code).json({ response, message, method, url });
-    };
+    const successResponse = (code, response, message = messages[code]) =>
+      res.status(code).json({ response, message, method, url });
     const errorResponse = (code, message = messages[code]) => {
       const error = new Error(message);
       error.statusCode = code;
@@ -29,6 +26,7 @@ export const setupResponses = (req, res, next) => {
     res.json403 = (message) => errorResponse(403, message);
     res.json404 = (message) => errorResponse(404, message);
     res.json500 = (message) => errorResponse(500, message);
+    next();
   } catch (error) {
     next(error);
   }
