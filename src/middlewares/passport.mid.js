@@ -80,7 +80,6 @@ passport.use(
     { clientID, clientSecret, callbackURL },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log(profile);
         const email = profile.id;
         let user = await usersManager.readBy({ email });
         if (!user) {

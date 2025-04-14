@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { setupResponses } from "../middlewares/setupResponses.mid.js";
-import { setupPolicies } from "../middlewares/setupPolicies.md.js";
+import { setupPolicies } from "../middlewares/setupPolicies.mid.js";
 
 class CustomRouter {
   constructor() {
