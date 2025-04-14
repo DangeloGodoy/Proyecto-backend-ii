@@ -1,60 +1,32 @@
 import CustomRouter from "../custom.router.js";
-import { passportCb } from "../../middlewares/passportCb.mid.js";
 import passport from "../../middlewares/passport.mid.js";
+import { passportCb } from "../../middlewares/passportCb.mid.js";
 
 const register = async (req, res) => {
   const response = req.user;
-  res.status(201).json({
-    response,
-    method: req.method,
-    url: req.originalUrl,
-  });
+  res.json201(response, "Registered");
 };
 const login = async (req, res) => {
   const response = req.user;
   const token = req.token;
-  const opts = {
-    maxAge: 60 * 60 * 24 * 7,
-    httpOnly: true,
-  };
-  res.cookie("token", token, opts).status(200).json({
-    response,
-    method: req.method,
-    url: req.originalUrl,
-  });
+  const opts = { maxAge: 60 * 60 * 24 * 7, httpOnly: true };
+  res.cookie("token", token, opts).json200(response, "Logged in");
 };
-const online = (req, res) => {
-  if (req.user._id) {
-    res.status(200).json({
-      user_id: req.user._id,
-      method: req.method,
-      url: req.originalUrl,
-    });
-  } else {
-    const error = new Error("User not found");
-    error.statusCode = 404;
-    throw error;
+const online = async (req, res) => {
+  if (!req.user.user_id) {
+    res.json401();
   }
+  res.json200({ user: req.user });
 };
 const signout = async (req, res) => {
-  res.clearCookie("token").status(200).json({
-    message: "Logged out successfully",
-    method: req.method,
-    url: req.originalUrl,
-  });
+  res.clearCookie("token").json200(null, "Signed out");
 };
 const badAuth = async (req, res) => {
-  const error = new Error("Bad authentication from redirect");
-  error.statusCode = 401;
-  throw error;
+  res.json401("Bad auth from redirect");
 };
 const google = async (req, res) => {
   const response = req.user;
-  res.status(200).json({
-    response,
-    method: req.method,
-    url: originalUrl,
-  });
+  res.json200(response);
 };
 
 class AuthRouter extends CustomRouter {
@@ -63,20 +35,22 @@ class AuthRouter extends CustomRouter {
     this.init();
   }
   init = () => {
-    this.create("/register", passportCb("register"), register);
-    this.create("/login", passportCb("login"), login);
-    this.read("/online", passportCb("current"), online);
-    this.create("/signout", passportCb("current"), signout);
-    this.read("/bad-auth", badAuth);
+    this.create("/register", ["PUBLIC"], passportCb("register"), register);
+    this.create("/login", ["PUBLIC"], passportCb("login"), login);
+    this.read("/online", ["USER", "ADMIN"], online);
+    this.create("/signout", ["USER", "ADMIN"], signout);
+    this.read("/bad-auth", ["PUBLIC"], badAuth);
     this.read(
       "/google",
+      ["PUBLIC"],
       passport.authenticate("google", {
         scope: ["email", "profile"],
         failureRedirect: "/api/auth/bad-auth",
       })
     );
     this.read(
-      "/google/callback",
+      "/google/cb",
+      ["PUBLIC"],
       passport.authenticate("google", {
         session: false,
         failureRedirect: "/api/auth/bad-auth",
