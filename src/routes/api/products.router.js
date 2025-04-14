@@ -10,47 +10,29 @@ const createOne = async (req, res) => {
 };
 const readAll = async (req, res) => {
   const response = await productsManager.readAll();
-  res.status(200).json({
-    response,
-    method: req.method,
-    url: req.originalUrl,
-  });
+  res.json200(response);
 };
 const readById = async (req, res) => {
   const data = req.params;
   const response = await productsManager.readById(data.pid);
-  res.status(200).json({
-    response,
-    method: req.method,
-    url: req.originalUrl,
-  });
+  res.json200(response);
 };
 const updateById = async (req, res) => {
   const data = req.params;
   const updateData = req.body;
   const response = await productsManager.updateById(data.pid, updateData);
-  res.status(200).json({
-    response,
-    method: req.method,
-    url: req.originalUrl,
-  });
+  res.json200(response);
 };
 const deleteById = async (req, res) => {
   const data = req.params;
   const response = await productsManager.deleteById(data.pid);
-  res.status(200).json({
-    response,
-    method: req.method,
-    url: req.originalUrl,
-  });
+  res.json200(response);
 };
 const pidParam = async (req, res, next, pid) => {
   try {
     const isObjectId = Types.ObjectId.isValid(pid);
     if (!isObjectId) {
-      const error = new Error("Invalid product ID");
-      error.statusCode = 400;
-      throw error;
+      res.json400("Invalid product ID");
     }
     return next();
   } catch (error) {
@@ -64,11 +46,11 @@ class ProductsRouter extends CustomRouter {
     this.init();
   }
   init = () => {
-    this.create("/", passportCb("admin"), createOne);
-    this.read("/", readAll);
-    this.read("/:pid", readById);
-    this.update("/:pid", passportCb("admin"), updateById);
-    this.destroy("/:pid", passportCb("admin"), deleteById);
+    this.create("/", ["ADMIN"], createOne);
+    this.read("/", ["PUBLIC"], readAll);
+    this.read("/:pid", ["PUBLIC"], readById);
+    this.update("/:pid", ["ADMIN"], updateById);
+    this.destroy("/:pid", ["ADMIN"], deleteById);
     this.router.param("pid", pidParam);
   };
 }
