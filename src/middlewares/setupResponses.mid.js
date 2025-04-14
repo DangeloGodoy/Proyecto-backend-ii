@@ -4,11 +4,11 @@ export const setupResponses = (req, res, next) => {
     const messages = {
       200: "Success",
       201: "Created",
-      400: "Client Error",
-      401: "Bad auth",
+      400: "Bad Request",
+      401: "Unauthorized",
       403: "Forbidden",
-      404: "Not found",
-      500: "Server Error",
+      404: "Not Found",
+      500: "Internal Server Error",
     };
     const successResponse = (code, response, message = messages[code]) =>
       res.status(code).json({ response, message, method, url });
