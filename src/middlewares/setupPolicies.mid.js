@@ -15,9 +15,9 @@ export const setupPolicies = (policies) => async (req, res, next) => {
       req.user = data;
       return next();
     } else {
-      res.json403();
+      res.json403()
     }
   } catch (error) {
-    res.json500(error.message);
+    next(error)
   }
 };
