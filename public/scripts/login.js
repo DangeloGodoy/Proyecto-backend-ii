@@ -13,12 +13,19 @@ document.querySelector("#login").addEventListener("click", async () => {
     let response = await fetch(url, opts);
     response = await response.json();
     if (response.error) {
-      alert(response.error);
+      swal(
+        "Error al ingresar!",
+        response.error,
+        "error"
+      );
     } else {
       location.replace("/");
     }
   } catch (error) {
-    //modificar a tostyfiay
-    alert("Error al registrar el usuario");
+    swal(
+      "Error al ingresar!",
+      "Error al registrar el usuario",
+      "error"
+    );
   }
 });
