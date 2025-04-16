@@ -18,8 +18,8 @@ passport.use(
     { passReqToCallback: true, usernameField: "email" },
     async (req, email, password, done) => {
       try {
-        const data = req.body;
-        if (!data.name || !data.city) {
+        const data = req.body; 
+        if (!data.firtsName || !data.lastName) {
           return done(null, null, {
             message: "Incomplete data",
             statusCode: 400,
