@@ -1,8 +1,9 @@
 import CustomRouter from "../custom.router.js";
 import { cartsManager } from "../../data/mongo/managers/carts.mongo.js";
-import { passportCb } from "../../middlewares/passportCb.mid.js";
 
 const createOne = async (req, res) => {
+  console.log(req);
+  
   const { product_id, quantity } = req.body;
   const user_id = req.user._id;
   const one = await cartsManager.createOne({ user_id, product_id, quantity });
