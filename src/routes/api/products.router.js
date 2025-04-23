@@ -1,6 +1,5 @@
 import CustomRouter from "../custom.router.js";
 import { productsManager } from "../../data/mongo/managers/manager.mongo.js";
-import { passportCb } from "../../middlewares/passportCb.mid.js";
 import { Types } from "mongoose";
 
 const createOne = async (req, res) => {
