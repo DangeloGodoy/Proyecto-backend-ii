@@ -6,7 +6,8 @@ import sessions from "express-session";
 import morgan from "morgan";
 import MongoStore from "connect-mongo";
 import __dirname from "./utils.js";
-import dbConnect from "./src/helpers/dbConnect.helper.js";
+import cors from "cors";
+import DatabaseConect from "./src/helpers/dbConnect.helper.js";
 import router from "./src/routes/index.router.js";
 import { errorHandler } from "./src/middlewares/errorHandler.mid.js";
 import { pathHandler } from "./src/middlewares/pathHandler.mid.js";
@@ -16,7 +17,8 @@ const server = express();
 const port = 8080;
 const ready = () => {
   console.log(`Server is running on http://localhost:${port}`);
-  dbConnect();
+  const db = new DatabaseConect(process.env.MONGO_URL);
+  db.dbConnect(process.env.MONGO_URL);
 };
 server.listen(port, ready);
 
@@ -31,6 +33,10 @@ server.use(cookieParser(process.env.COOKIE_SECRET));
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(express.static("public"));
+server.use(cors({
+  origin: true,
+  credentials: true,
+}));
 
 server.use(
   sessions({
