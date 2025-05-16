@@ -1,12 +1,29 @@
-import { connect } from "mongoose"
+import { connect } from "mongoose";
 
-const dbConnect = async () => {
-    try {
-        connect(process.env.MONGO_URL)
-        console.log("MongoDB connected");
-    } catch (error) {
-        console.log("MongoDB connection error");
+class DatabaseConect {
+  constructor(url) {
+    this.url = url;
+    if (typeof DatabaseConect.instance === "object") {
+      return DatabaseConect.instance;
+    } else {
+      DatabaseConect.instance = this;
+      return this;
     }
-}
+  }
 
-export default dbConnect;
+  /**
+   * @dbConnect
+   * Connect to database
+   * @param {string} url
+   * @returns {Promise}
+   */
+  dbConnect = async (url) => {
+    try {
+      connect(url);
+      console.log("MongoDB connected");
+    } catch (error) {
+      console.log("MongoDB connection error");
+    }
+  };
+}
+export default DatabaseConect;
