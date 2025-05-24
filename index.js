@@ -46,7 +46,7 @@ server.use(
   sessions({
     secret: process.env.SESSION_SECRET,
     resave: true,
-    saveUnitialized: true,
+    saveUninitialized: true,
     store: new MongoStore({
       ttl: 7 * 24 * 60 * 60,
       mongoUrl: process.env.MONGO_URL,
