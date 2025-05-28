@@ -1,8 +1,8 @@
 import {
   usersManager,
   productsManager,
-} from "../data/mongo/managers/manager.mongo.js";
-import { cartsManager } from "../data/mongo/managers/carts.mongo.js";
+  cartsManager,
+} from "../data/dao.factory.js";
 
 const homeView = async (req, res) => {
   try {
@@ -61,4 +61,11 @@ const loginView = (req, res) => {
   }
 };
 
-export { homeView, profileView, detailsView, cartView, registerView, loginView };
+export {
+  homeView,
+  profileView,
+  detailsView,
+  cartView,
+  registerView,
+  loginView,
+};

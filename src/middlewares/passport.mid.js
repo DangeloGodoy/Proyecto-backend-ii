@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
-import { usersManager } from "../data/mongo/managers/manager.mongo.js";
+import { usersManager } from "../data/dao.factory.js";
 import { createHash, verifyHash } from "../helpers/hash.helper.js";
 import { createToken } from "../helpers/token.helper.js";
 const {
@@ -19,6 +19,7 @@ passport.use(
     async (req, email, password, done) => {
       try {
         const data = req.body; 
+        console.log(req)
         if (!data.firtsName || !data.lastName) {
           return done(null, null, {
             message: "Incomplete data",

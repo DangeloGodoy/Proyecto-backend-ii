@@ -1,4 +1,4 @@
-import { productsManager } from '../data/mongo/managers/manager.mongo.js';
+import { productsManager } from "../data/dao.factory.js";
 
 const createOneService = async (data) => await productsManager.createOne(data);
 const readAllService = async (filter) => await productsManager.readAll(filter);

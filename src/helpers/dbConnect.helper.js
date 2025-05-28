@@ -7,7 +7,7 @@ class DatabaseConect {
       return DatabaseConect.instance;
     } else {
       DatabaseConect.instance = this;
-      return this;
+        return this;
     }
   }
 

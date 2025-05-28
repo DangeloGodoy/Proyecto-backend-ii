@@ -17,18 +17,14 @@ class CustomRouter {
       }
     });
   create = (path, policies, ...cbs) =>
-    this.router.post(path, setupPolicies(policies), this.applyMiddlewares(cbs));
+    this.router.post(path, setupPolicies(policies), ...this.applyMiddlewares(cbs));
   read = (path, policies, ...cbs) =>
-    this.router.get(path, setupPolicies(policies), this.applyMiddlewares(cbs));
+    this.router.get(path, setupPolicies(policies), ...this.applyMiddlewares(cbs));
   update = (path, policies, ...cbs) =>
-    this.router.put(path, setupPolicies(policies), this.applyMiddlewares(cbs));
+    this.router.put(path, setupPolicies(policies), ...this.applyMiddlewares(cbs));
   destroy = (path, policies, ...cbs) =>
-    this.router.delete(
-      path,
-      setupPolicies(policies),
-      this.applyMiddlewares(cbs)
-    );
-  use = (path, ...cbs) => this.router.use(path, this.applyMiddlewares(cbs));
+    this.router.delete(path, setupPolicies(policies), ...this.applyMiddlewares(cbs));
+  use = (path, ...cbs) => this.router.use(path, ...this.applyMiddlewares(cbs));
 }
 
 export default CustomRouter;
